@@ -44,7 +44,7 @@ def compute_reward(seq, actions, ignore_far_sim=True, temp_dist_thre=20, use_gpu
     # compute representativeness reward
     dist_mat = torch.pow(_seq, 2).sum(dim=1, keepdim=True).expand(n, n)
     dist_mat = dist_mat + dist_mat.t()
-    dist_mat.addmm_(1, -2, _seq, _seq.t())
+    dist_mat.addmm_(_seq, _seq.t(), beta=1, alpha=-2)
     dist_mat = dist_mat[:,pick_idxs]
     dist_mat = dist_mat.min(1, keepdim=True)[0]
     #reward_rep = torch.exp(torch.FloatTensor([-dist_mat.mean()]))[0] # representativeness reward [Eq.5]
